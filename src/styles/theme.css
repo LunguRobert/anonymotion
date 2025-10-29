@@ -1,0 +1,182 @@
+@import "tailwindcss";
+
+:root {
+  /* 🔳 Dark surfaces */
+  --color-background: #0b0f14;  /* page background (aproape negru albastru) */
+  --color-surface:    #0e131a;  /* secțiuni mari / hero */
+  --color-card:       #121825;  /* carduri */
+
+  /* 🎯 UI brand & accents (alese pt contrast bun pe text deschis) */
+  --color-primary:    #6d28d9;  /* violet-700 – alb pe acest fundal ≈ 7:1 */
+  --color-secondary:  #1f2937;  /* gray-800 – pentru borduri/pilule */
+  --color-accent:     #22d3ee;  /* cyan-400 – accent subtil pe badge-uri/links */
+
+  /* ⚠ states */
+  --color-danger:     #ef4444;  /* red-500 */
+  --color-success:    #22c55e;  /* green-500 */
+
+  /* ✍️ Text */
+  --color-inverted:   #f1f5f9;  /* slate-100 – text principal pe dark */
+  --color-muted:      #94a3b8;  /* slate-400 – text secundar */
+
+  /* 💡 Soft glow for sections (folosit cu .glow-lamp) */
+  --lamp-glow: radial-gradient(120% 80% at 50% -10%, rgba(255,255,255,0.08), transparent 60%);
+}
+
+/* Recomandat: asigură contrastele default pentru întreg site-ul */
+html, body {
+  min-height: 100%;
+}
+body {
+  /* aplică tema dark global */
+  background-color: var(--color-background);
+  color: var(--color-inverted);
+}
+
+/* Texte lungi */
+.prose, .copy {
+  color: var(--color-inverted);
+}
+.prose p { color: var(--color-muted); }
+
+/* Focus vizibil pe tastatură */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+button{
+  cursor: pointer;
+}
+
+@theme {
+  /* 🎨 Paletă revizuită pentru dark mode elegant și calm */
+  --color-background: #0d111c;          /* fundal global */
+  --color-surface: #0f1219;             /* suprafețe (cards, nav, etc.) */
+  --color-card: #1f1f1f;
+
+  --color-primary: #6ee7b7;             /* mint green */
+  --color-secondary: #c4b5fd;           /* soft lavender */
+  --color-accent: #f9a8d4;              /* pastel pink */
+
+  --color-danger: #f87171;
+  --color-success: #4ade80;
+
+  --color-text: #f4f4f5;
+  --color-muted: #a1a1aa;
+  --color-inverted: #0f0f0f;
+
+  --lamp-glow: linear-gradient(to bottom right, #22d3ee, #c084fc);
+
+  --font-sans: Inter, ui-sans-serif, system-ui, sans-serif;
+}
+
+@theme inline {
+  --animate-scroll: scroll var(--animation-duration, 40s) var(--animation-direction, forwards) linear infinite;
+ 
+  @keyframes scroll {
+    to {
+      transform: translate(calc(-50% - 0.5rem));
+    }
+  }
+}
+
+@layer utilities {
+  /* 🌌 Backgrounds */
+  .bg-background { background-color: var(--color-background); }
+  .bg-surface { background-color: var(--color-surface); }
+  .bg-card { background-color: var(--color-card); }
+  .bg-primary { background-color: var(--color-primary); }
+  .bg-secondary { background-color: var(--color-secondary); }
+  .bg-accent { background-color: var(--color-accent); }
+  .bg-danger { background-color: var(--color-danger); }
+  .bg-success { background-color: var(--color-success); }
+  .glow-lamp {
+    background-image: var(--lamp-glow);
+  }
+
+  /* ✍️ Text */
+  .text-primary { color: var(--color-primary); }
+  .text-secondary { color: var(--color-secondary); }
+  .text-accent { color: var(--color-accent); }
+  .text-danger { color: var(--color-danger); }
+  .text-success { color: var(--color-success); }
+  .text-muted { color: var(--color-muted); }
+  .text-inverted { color: var(--color-inverted); }
+
+  /* 📏 Borders */
+  .border-primary { border-color: var(--color-primary); }
+  .border-secondary { border-color: var(--color-secondary); }
+  .border-accent { border-color: var(--color-accent); }
+  .border-danger { border-color: var(--color-danger); }
+  .border-success { border-color: var(--color-success); }
+
+  /* 🔵 Rings */
+  .ring-primary { --tw-ring-color: var(--color-primary); }
+  .ring-secondary { --tw-ring-color: var(--color-secondary); }
+  .ring-accent { --tw-ring-color: var(--color-accent); }
+  .ring-danger { --tw-ring-color: var(--color-danger); }
+  .ring-success { --tw-ring-color: var(--color-success); }
+
+  /* ☁️ Shadows */
+  .shadow-primary { --tw-shadow-color: var(--color-primary); }
+  .shadow-secondary { --tw-shadow-color: var(--color-secondary); }
+  .shadow-accent { --tw-shadow-color: var(--color-accent); }
+}
+
+/* ===== Scrollbar Custom Styling ===== */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #d946ef #1e1b4b;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #d946ef, #06b6d4);
+  border-radius: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, #f472b6, #22d3ee);
+}
+
+/* === Reactions micro-animations === */
+
+/* keyframes */
+@keyframes pop {
+  0% { transform: scale(0.92); }
+  60% { transform: scale(1.14); }
+  100% { transform: scale(1); }
+}
+@keyframes floatUp {
+  0%   { opacity: 0; transform: translateY(8px); }
+  15%  { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-18px); }
+}
+@keyframes flashBg {
+  /* fallback pe o tentă a culorii primare (mint) + suport color-mix */
+  0%   {
+    background-color: rgba(110, 231, 183, 0.18); /* fallback */
+    background-color: color-mix(in srgb, var(--color-primary) 18%, transparent);
+  }
+  100% { background-color: transparent; }
+}
+
+/* utilitare */
+@layer utilities {
+  .reaction-pop { animation: pop .25s ease-out; }
+  .float-chip   { animation: floatUp .65s ease-out forwards; }
+  .flash-bg     { animation: flashBg .6s ease-out; }
+}
+
+/* respectă preferința de reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .reaction-pop, .float-chip, .flash-bg { animation: none !important; }
+}

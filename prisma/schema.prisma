@@ -1,0 +1,229 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Plan {
+  FREE
+  PREMIUM
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  timezone      String?  @default("Europe/Amsterdam")
+  image         String?
+  password      String?
+  plan          Plan     @default(FREE)
+  emailVerified DateTime?
+  blocked       Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  accounts      Account[]
+  sessions      Session[]
+  posts         Post[]
+  reactions     Reaction[]
+  reports       Report[]
+  journalEntries JournalEntry[]
+  blogPosts      BlogPost[]
+  userBadges     UserBadge[]
+
+  journalLockEnabled  Boolean @default(false)
+  journalPasswordHash String?
+  journalLockHint     String?
+}
+
+model Account {
+  id                 String  @id @default(cuid())
+  userId             String
+  type               String
+  provider           String
+  providerAccountId  String
+  refresh_token      String? 
+  access_token       String? 
+  expires_at         Int?    
+  token_type         String? 
+  scope              String? 
+  id_token           String? 
+  session_state      String? 
+
+  user User @relation(fields: [userId], references: [id])
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model JournalEntry {
+  id        String   @id @default(cuid())
+  content   String
+  mood      Emotion
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+
+  @@index([userId, createdAt])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+  createdAt  DateTime @default(now())
+  
+  @@unique([identifier, token])
+}
+
+model PasswordResetToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+  createdAt  DateTime @default(now())
+
+  @@unique([identifier, token])
+}
+
+model Post {
+  id        String   @id @default(cuid())
+  content   String
+  emotion   Emotion
+  createdAt DateTime @default(now())
+  reactions Reaction[]
+  reports Report[]
+
+  userId    String?   // ← ID-ul utilizatorului (opțional în MVP)
+  user      User?     @relation(fields: [userId], references: [id])
+}
+
+model Reaction {
+  id        String   @id @default(cuid())
+  type      String
+  post      Post     @relation(fields: [postId], references: [id])
+  postId    String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  createdAt DateTime @default(now())
+
+  @@unique([postId, userId]) // 🛡️ doar una per user/post
+}
+
+enum Emotion {
+  SAD
+  ANXIOUS
+  HAPPY
+  ANGRY
+  NEUTRAL
+}
+
+model Report {
+  id        String   @id @default(cuid())
+  reason    String?
+  createdAt DateTime @default(now())
+
+  post   Post   @relation(fields: [postId], references: [id])
+  postId String
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  @@unique([postId, userId])
+}
+
+model BlogPost {
+  id           String    @id @default(cuid())
+  title        String
+  slug         String    @unique
+  excerpt      String?
+  content      String    // markdown
+  coverImage   String?
+  tags         String[]  // Postgres text[]
+  published    Boolean   @default(false)
+  publishedAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  author       User?     @relation(fields: [authorId], references: [id])
+  authorId     String?
+
+  @@index([published, publishedAt])
+}
+
+// --- Badge enums ---
+enum BadgeTier {
+  common
+  rare
+  epic
+}
+
+enum BadgeScope {
+  journal
+  feed
+}
+
+// --- Badge models ---
+model Badge {
+  code        String      @id
+  label       String
+  emoji       String
+  color       String
+  tier        BadgeTier
+  scope       BadgeScope
+  description String?
+  createdAt   DateTime    @default(now())
+
+  userBadges  UserBadge[]
+}
+
+model UserBadge {
+  userId    String
+  badgeCode String
+  earnedAt  DateTime   @default(now())
+
+  user   User  @relation(fields: [userId], references: [id])
+  badge  Badge @relation(fields: [badgeCode], references: [code])
+
+  @@id([userId, badgeCode])
+}
+
+// ---- Feedback (user feedback) ----
+enum FeedbackType {
+  BUG
+  FEATURE
+  PRAISE
+  OTHER
+}
+
+model Feedback {
+  id        String       @id @default(cuid())
+  createdAt DateTime     @default(now())
+  type      FeedbackType
+  rating    Int?         // 1..5 (optional)
+  message   String
+  email     String?      @db.VarChar(191)
+  from      String       @default("app") // ex: "feed", "user", "settings"
+  ip        String?      @db.VarChar(191)
+  ua        String?      @db.VarChar(512)
+  userId    String?      @db.VarChar(191) // opțional: ID din aplicația ta (fără relație strictă)
+
+  @@index([createdAt, type])
+  @@index([from])
+}
