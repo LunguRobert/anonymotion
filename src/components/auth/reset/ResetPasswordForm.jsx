@@ -1,7 +1,6 @@
 'use client'
 
 import { useMemo, useState, useEffect } from 'react'
-import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 
 function Check({ ok }) {
@@ -42,9 +41,7 @@ function strengthLabel(score) {
   return ['Very weak', 'Weak', 'OK', 'Good', 'Excellent'][score]
 }
 
-export default function ResetPasswordForm() {
-  const sp = useSearchParams()
-  const token = sp.get('token') || ''
+export default function ResetPasswordForm({ token = '' }) {
   const [pw1, setPw1] = useState('')
   const [pw2, setPw2] = useState('')
   const [show1, setShow1] = useState(false)
