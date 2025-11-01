@@ -19,10 +19,10 @@ export default function AppFooter() {
 
         {/* Links */}
         <div className="flex gap-6 text-sm">
-          <Link href="/terms" className="hover:text-primary transition-colors">
+          <Link href="/legal/terms" className="hover:text-primary transition-colors">
             Terms
           </Link>
-          <Link href="/privacy" className="hover:text-primary transition-colors">
+          <Link href="/legal/privacy" className="hover:text-primary transition-colors">
             Privacy
           </Link>
           <Link href="/contact" className="hover:text-primary transition-colors">

@@ -92,14 +92,11 @@ export default function FaqPlain({ title = "FAQ" }) {
                 )}
                 {/moderated/.test(item.q) || /report/i.test(item.q) ? (
                   <Link href="/guidelines" className="underline-offset-4 hover:underline hover:text-inverted">
-                    Community guidelines
+
                   </Link>
                 ) : null}
                 {/export|delete/i.test(item.q) ? (
                   <>
-                    <Link href="/account/export" className="underline-offset-4 hover:underline hover:text-inverted">
-                      Export data
-                    </Link>
                     <Link href="/privacy" className="underline-offset-4 hover:underline hover:text-inverted">
                       Privacy policy
                     </Link>
