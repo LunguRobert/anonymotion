@@ -115,12 +115,12 @@ export default function AppNavbar() {
                 </button>
               </>
             ) : (
-              <button
-                onClick={() => signIn('google')}
+              <Link
+                href="/auth/signin"
                 className="rounded-full bg-primary px-4 py-2 text-sm font-medium text-inverted transition hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 ring-primary"
               >
                 Login
-              </button>
+              </Link>
             )}
           </div>
         </div>
