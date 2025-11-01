@@ -48,6 +48,22 @@ body {
 button{
   cursor: pointer;
 }
+/* Folosește aspect-ratio când există… */
+.ios-square { aspect-ratio: 1 / 1; }
+
+/* …și cade pe hack-ul cu padding doar când aspect-ratio NU e suportat */
+@supports not (aspect-ratio: 1 / 1) {
+  .ios-square { position: relative; }
+  .ios-square::before {
+    content: "";
+    display: block;
+    padding-top: 100%; /* pătrat perfect */
+  }
+  .ios-square > .mmx-inner {
+    position: absolute;
+    inset: 0;
+  }
+}
 
 @theme {
   /* 🎨 Paletă revizuită pentru dark mode elegant și calm */

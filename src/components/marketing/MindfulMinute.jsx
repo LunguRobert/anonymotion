@@ -260,7 +260,7 @@ export default function MindfulMinute() {
 
         {/* coach + badges */}
         <div className="mt-6 grid items-center gap-6 md:grid-cols-2">
-          <div className="mmx-coach relative mx-auto aspect-square w-full max-w-[420px] rounded-3xl border border-secondary/60 bg-surface/60 p-6">
+          <div className="mmx-coach ios-square relative mx-auto aspect-square w-full max-w-[420px] rounded-3xl border border-secondary/60 bg-surface/60 p-6">
             <div className="mmx-ring absolute inset-6 rounded-full" aria-hidden="true"
                  style={{ background: `conic-gradient(var(--color-accent) ${progressTotal*360}deg, rgba(255,255,255,.08) 0)` }} />
             <div className="absolute inset-[3.25rem] rounded-full bg-card/50 border border-secondary/40" />
