@@ -9,7 +9,6 @@ import { UserNav } from "@/components/user/UserNav";
 import { appSignOut } from "@/utils/logout";
 import NavbarBell from "@/components/notifications/NavbarBell";
 
-// Util mic pentru a uni clasele fără a aloca array-uri la fiecare randare
 function cx(...classes) {
   return classes.filter(Boolean).join(" ");
 }
@@ -25,7 +24,7 @@ export default function AppNavbar() {
   // Închide meniul la schimbarea rutei
   useEffect(() => setOpen(false), [pathname]);
 
-  // Blochează scroll-ul în spate când meniul mobil e deschis
+  // Blochează scroll când meniul mobil e deschis (fără body reflow pe iOS)
   useEffect(() => {
     if (!open) return;
     const prev = document.documentElement.style.overflow;
@@ -44,7 +43,6 @@ export default function AppNavbar() {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  // Elemente de meniu (memoizat ca să evităm re-randări inutile)
   const items = useMemo(
     () => [
       { name: "Home", href: "/" },
@@ -71,8 +69,8 @@ export default function AppNavbar() {
         aria-label="Primary"
         className={cx(
           "relative border-b border-secondary/60 bg-surface/90",
-          // blur-ul poate produce lag pe device-uri slabe -> îl ținem doar pe md+
-          "md:backdrop-blur supports-[backdrop-filter]:md:bg-surface/70"
+          // ⚠️ Blur-ul pe iOS poate produce lag -> îl ținem doar pe md+ și când motion nu e redus
+          "motion-safe:md:backdrop-blur supports-[backdrop-filter]:motion-safe:md:bg-surface/70"
         )}
       >
         <a
@@ -106,7 +104,6 @@ export default function AppNavbar() {
           </ul>
 
           <div className="flex items-center justify-center">
-            {/* Notifications (mobile) */}
             {session?.user ? (
               <div className="mr-2 md:hidden">
                 <NavbarBell />
@@ -116,12 +113,11 @@ export default function AppNavbar() {
             {/* Mobile toggle */}
             <button
               type="button"
-              className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-secondary/60 bg-card/60 text-inverted ring-accent transition active:scale-[0.98] md:hidden focus-visible:outline-none focus-visible:ring-2"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-secondary/60 bg-card/60 text-inverted ring-accent transition active:scale-[0.98] md:hidden focus-visible:outline-none focus-visible:ring-2 transform-gpu"
               aria-expanded={open}
               aria-controls="mobile-menu"
               onPointerDown={() => (wasPointerDown.current = true)}
               onClick={() => {
-                // evităm dublul toggle pe dispozitive care declanșează și pointerdown + click
                 if (wasPointerDown.current) {
                   wasPointerDown.current = false;
                 }
@@ -157,86 +153,82 @@ export default function AppNavbar() {
                 </button>
               </>
             ) : (
-          <Link
-            href="/auth/signin"
-            className="rounded-full bg-primary px-4 py-2 text-sm font-medium text-inverted transition hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 ring-primary"
-          >
-            Login
-          </Link>
+              // 🔁 Cerința anterioară: du butonul către /auth/signin
+              <Link
+                href="/auth/signin"
+                className="rounded-full bg-primary px-4 py-2 text-sm font-medium text-inverted transition hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 ring-primary"
+              >
+                Login
+              </Link>
             )}
           </div>
         </div>
 
-        {/* Mobile sheet (optim cu grid-rows pentru animație fără calc de înălțime) */}
+        {/* Mobile sheet — varianta iOS: absolut, slide/opacity, transform-only */}
         <div
           id="mobile-menu"
-          data-open={open}
+          aria-hidden={!open}
           className={cx(
-            "md:hidden border-t border-secondary/60",
-            // container care își animă înălțimea fără a calcula pixel cu pixel
-            "grid transition-[grid-template-rows,opacity] duration-300",
-            open
-              ? "grid-rows-[1fr] opacity-100"
-              : "grid-rows-[0fr] opacity-0 pointer-events-none"
+            "md:hidden absolute left-0 right-0 top-14 md:top-16 z-40 origin-top transform-gpu transition duration-200 ease-out",
+            open ? "translate-y-0 opacity-100" : "-translate-y-3 opacity-0 pointer-events-none"
           )}
+          style={{ willChange: "transform, opacity" }}
         >
-          <div className="overflow-hidden">
-            <div className="px-4 py-4">
-              <ul className="flex flex-col gap-1">
-                {items.map(({ name, href }) => (
-                  <li key={href}>
+          <div className="mx-auto max-w-7xl px-4 md:px-6">
+            <div className="rounded-b-2xl border border-secondary/60 bg-surface/95 shadow-sm">
+              <div className="px-4 py-4">
+                <ul className="flex flex-col gap-1">
+                  {items.map(({ name, href }) => (
+                    <li key={href}>
+                      <Link
+                        href={href}
+                        onClick={() => setOpen(false)}
+                        className={cx(
+                          "block rounded-xl px-3 py-2 text-sm",
+                          isActive(href)
+                            ? "text-inverted border border-secondary/60 bg-card/70"
+                            : "text-muted hover:text-inverted hover:bg-card/50 border border-transparent"
+                        )}
+                      >
+                        {name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+
+                <div className="mt-3 h-px w-full bg-secondary/60" />
+
+                <div className="mt-3 flex min-w-0 items-center gap-3">
+                  {session?.user ? (
+                    <>
+                      <div
+                        onClick={() => setOpen(false)}
+                        className="min-w-0"
+                        aria-label="Open dashboard"
+                      >
+                        <UserNav className="w-full cursor-pointer" />
+                      </div>
+
+                      <button
+                        onClick={() => {
+                          setOpen(false);
+                          appSignOut({ callbackUrl: "/" });
+                        }}
+                        className="ml-auto rounded-full border border-secondary/60 bg-card/60 px-3 py-1.5 text-sm text-inverted transition hover:bg-card"
+                        title="Logout"
+                      >
+                        Logout
+                      </button>
+                    </>
+                  ) : (
                     <Link
-                      href={href}
-                      onClick={() => setOpen(false)}
-                      className={cx(
-                        "block rounded-xl px-3 py-2 text-sm",
-                        isActive(href)
-                          ? "text-inverted border border-secondary/60 bg-card/70"
-                          : "text-muted hover:text-inverted hover:bg-card/50 border border-transparent"
-                      )}
+                      href="/auth/signin"
+                      className="w-full rounded-full bg-primary px-4 py-2 text-sm font-medium text-inverted transition hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 ring-primary text-center"
                     >
-                      {name}
+                      Login
                     </Link>
-                  </li>
-                ))}
-              </ul>
-
-              <div className="mt-3 h-px w-full bg-secondary/60" />
-
-              {/* User pill + Logout (mobile) */}
-              <div className="mt-3 flex min-w-0 items-center gap-3">
-                {session?.user ? (
-                  <>
-                    <div
-                      onClick={() => setOpen(false)}
-                      className="min-w-0"
-                      aria-label="Open dashboard"
-                    >
-                      <UserNav className="w-full cursor-pointer" />
-                    </div>
-
-                    <button
-                      onClick={() => {
-                        setOpen(false);
-                        appSignOut({ callbackUrl: "/" });
-                      }}
-                      className="ml-auto rounded-full border border-secondary/60 bg-card/60 px-3 py-1.5 text-sm text-inverted transition hover:bg-card"
-                      title="Logout"
-                    >
-                      Logout
-                    </button>
-                  </>
-                ) : (
-                  <button
-                    onClick={() => {
-                      setOpen(false);
-                      signIn("google");
-                    }}
-                    className="w-full rounded-full bg-primary px-4 py-2 text-sm font-medium text-inverted transition hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 ring-primary"
-                  >
-                    Login
-                  </button>
-                )}
+                  )}
+                </div>
               </div>
             </div>
           </div>
