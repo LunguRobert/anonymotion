@@ -13,24 +13,41 @@ export async function POST(req) {
   if (limited) return limited;
 
   const session = await getServerSession(authOptions)
-  const email = session?.user?.email
-  if (!email) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+  let body = null
+  try { body = await req.json() } catch { /* noop */ }
+
+  // dacă userul e logat, folosim emailul din sesiune; altfel încercăm din body
+  const bodyEmail = body?.email ? String(body.email).trim().toLowerCase() : null
+  const email = (session?.user?.email?.toLowerCase?.()) || bodyEmail
+
+  if (!email) {
+    // e mai util pentru UX să cerem email când nu există sesiune
+    return NextResponse.json({ error: 'Email required' }, { status: 400 })
+  }
 
   const user = await prisma.user.findUnique({ where: { email } })
-  if (user?.emailVerified) {
-    return NextResponse.json({ ok: true, alreadyVerified: true })
+  if (!user || user.emailVerified) {
+    // nu dezvăluim dacă nu există user sau e deja verificat
+    return NextResponse.json({ ok: true })
   }
 
   // Optional, simple rate-limit: if there is a non-expired token, do not create a new one
   const existing = await prisma.verificationToken.findFirst({
     where: { identifier: email, expires: { gt: new Date() } }
   })
+
   if (existing) {
-    return NextResponse.json({ error: 'Please wait before requesting another verification email.' }, { status: 429 })
+    // retrimitem linkul existent, nu creăm token nou (evităm flood)
+    const base = process.env.NEXT_PUBLIC_BASE_URL || process.env.BASE_URL || ''
+    const verifyUrl = `${base}/api/auth/verify?token=${encodeURIComponent(existing.token)}`
+    await sendVerificationEmail(email, verifyUrl)
+    return NextResponse.json({ ok: true })
   }
 
   const { verifyUrl } = await createEmailVerifyToken(email)
   await sendVerificationEmail(email, verifyUrl)
+
 
   return NextResponse.json({ ok: true })
 }

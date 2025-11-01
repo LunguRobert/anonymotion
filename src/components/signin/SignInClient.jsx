@@ -78,19 +78,37 @@ export default function SignInClient() {
     }
   }
 
-  async function handleResend() {
-    setError(''); setInfo('')
-    try {
-      const res = await fetch('/api/auth/send-verification', { method: 'POST' })
-      if (res.status === 401) { setError('Sign in with Google first or register your email.'); return }
-      if (res.status === 429) { setError('Please wait before requesting again.'); return }
-      const data = await res.json().catch(() => ({}))
-      if (data.alreadyVerified) setInfo('Your email is already verified.')
-      else setInfo('Verification email sent. Check your inbox.')
-    } catch {
-      setError('Could not send verification email.')
+async function handleResend() {
+  setError(''); setInfo('')
+  try {
+    // dacă nu ești logat, API cere email — validăm aici
+    if (!EMAIL_RE.test(email)) {
+      setError('Please enter the email you used for your account.');
+      return;
     }
+
+    const res = await fetch('/api/auth/send-verification', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ email: email.trim().toLowerCase() }),
+    });
+
+    if (!res.ok) {
+      if (res.status === 401) { setError('Please sign in first or register your email.'); return; }
+      if (res.status === 429) { setError('Please wait before requesting again.'); return; }
+      const j = await res.json().catch(() => ({}));
+      setError(j?.error || 'Could not send verification email.');
+      return;
+    }
+
+    const data = await res.json().catch(() => ({}));
+    if (data.alreadyVerified) setInfo('Your email is already verified.');
+    else setInfo('Verification email sent. Check your inbox.');
+  } catch {
+    setError('Could not send verification email.');
   }
+}
+
 
   return (
     <main className="mx-auto flex min-h-[100svh] w-full max-w-6xl items-center justify-center px-4 py-12">
