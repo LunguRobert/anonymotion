@@ -258,7 +258,7 @@ export default function JournalClient({ isPremium }) {
           <>
             <JournalTimeline
               entries={entries}
-              onEditEntry={(entry) => { setSelectedEntry(entry); setOpen(true) }}
+              onEditEntry={(entry) => { setSelectedEntry(entry ?? null); setOpen(true) }}
             />
             <div ref={loadMoreRef} className="mt-6 h-8" />
             {isLoading && (
@@ -280,16 +280,24 @@ export default function JournalClient({ isPremium }) {
       {/* MODAL */}
       {open && (
         <JournalModal
+          key={selectedEntry?.id || 'new'}
+          entryToEdit={selectedEntry}
           onClose={() => { setOpen(false); setSelectedEntry(null) }}
           onAdd={(newOrUpdated) => {
             setEntries((prev) => {
-              const exists = prev.find(e => e.id === newOrUpdated.id)
-              if (exists) return prev.map(e => e.id === newOrUpdated.id ? newOrUpdated : e)
-              return [newOrUpdated, ...prev]
+              const exists = prev.some(e => e.id === newOrUpdated?.id)
+              return exists
+                ? prev.map(e => (e.id === newOrUpdated.id ? newOrUpdated : e))
+                : [newOrUpdated, ...prev]
             })
+            setOpen(false)
+            setSelectedEntry(null)
           }}
-          onDelete={(id) => setEntries((prev) => prev.filter(e => e.id !== id))}
-          entryToEdit={selectedEntry}
+          onDelete={(id) => {
+            setEntries((prev) => prev.filter(e => e.id !== id))
+            setOpen(false)
+            setSelectedEntry(null)
+          }}
         />
       )}
     </main>
