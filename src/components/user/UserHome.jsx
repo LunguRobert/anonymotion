@@ -180,14 +180,16 @@ export default function UserHome({ name, timezone }) {
           <div className="grid grid-cols-1 min-[380px]:grid-cols-2 sm:grid-cols-3 gap-2">
             <Link
               href="/user/journal"
-              className="inline-flex items-center justify-center rounded-full bg-pink-600 px-4 py-2 text-sm font-medium text-white shadow hover:bg-pink-700 transition"
+              className="inline-flex h-10 w-full items-center justify-center whitespace-nowrap rounded-full bg-pink-600 px-4 text-sm font-medium text-white shadow hover:bg-pink-700 transition"
+              aria-label="New Journal Entry"
             >
               New Journal Entry
             </Link>
 
             <Link
               href="/user/stats"
-              className="inline-flex items-center justify-center rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm text-white hover:bg-white/10 transition"
+              className="inline-flex h-10 w-full items-center justify-center whitespace-nowrap rounded-full border border-white/15 bg-white/5 px-4 text-sm text-white hover:bg-white/10 transition"
+              aria-label="View Insights"
             >
               View Insights
             </Link>
@@ -195,13 +197,31 @@ export default function UserHome({ name, timezone }) {
             <button
               type="button"
               onClick={() => setShowLock(true)}
-              className="inline-flex items-center justify-center rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm text-white hover:bg-white/10 transition cursor-pointer"
+              className="inline-flex h-10 w-full items-center justify-center whitespace-nowrap rounded-full border border-white/15 bg-white/5 px-4 text-sm text-white hover:bg-white/10 transition cursor-pointer min-[380px]:col-span-2 sm:col-span-1"
+              aria-label="Journal Lock"
             >
               Journal Lock
             </button>
           </div>
 
 
+        </div>
+
+        <div className="mt-6 relative z-10 rounded-2xl border border-amber-400/30 bg-amber-400/10 px-4 py-3 sm:px-5 sm:py-4">
+          <div className="flex items-start gap-3">
+            <span className="mt-0.5 inline-flex h-6 w-6 items-center justify-center rounded-full bg-amber-400/20 text-amber-200">🧪</span>
+            <div className="flex-1">
+              <p className="text-sm text-amber-100">
+                <span className="font-medium">Public Beta:</span> you currently have full access to all <span className="font-medium">Premium</span> features for free during our early access period.
+                We’d love your feedback to help shape the next version.
+              </p>
+              <div className="mt-2">
+                <Link href="/pricing" className="text-xs underline text-amber-200/90 hover:text-amber-100">
+                  Learn more about upcoming plans →
+                </Link>
+              </div>
+            </div>
+          </div>
         </div>
 
         {error && (
