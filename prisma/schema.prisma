@@ -25,7 +25,7 @@ model User {
   timezone      String?  @default("Europe/Amsterdam")
   image         String?
   password      String?
-  plan          Plan     @default(FREE)
+  plan          Plan     @default(PREMIUM)
   emailVerified DateTime?
   blocked       Boolean   @default(false)
   createdAt     DateTime  @default(now())
