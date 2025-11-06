@@ -1,17 +1,22 @@
 // app/layout.js
 import './globals.css'
 import { Manrope } from 'next/font/google'
+import Script from 'next/script'
 import AppNavbar from '@/components/Navbar'
 import AppFooter from '@/components/Footer'
 import SessionWrapper from '@/components/SessionWrapper'
 import { NotificationsProvider } from '@/components/notifications/NotificationsProvider'
+import CookieConsent from '@/components/CookieConsent'
+import GaReporter from '@/components/GaReporter'
 
-// ✅ Folosim className, nu variabile Tailwind (nu e nevoie de tailwind.config)
+// ✅ Tailwind via className
 const manrope = Manrope({
   subsets: ['latin', 'latin-ext'],
   weight: ['300','400','500','600','700','800'],
   display: 'swap',
 })
+
+const GA_ID = process.env.NEXT_PUBLIC_GA_ID || ''
 
 export const metadata = {
   title: {
@@ -60,7 +65,50 @@ export const viewport = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      {/* 👇 Aplicăm Manrope pe tot body-ul prin className */}
+      <head>
+        {/* Performance: warm up GA domain */}
+        <link rel="preconnect" href="https://www.googletagmanager.com" />
+        <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+
+        {/* Consent Mode v2 bootstrap — default DENIED, se actualizează după Accept */}
+        <Script id="consent-bootstrap" strategy="beforeInteractive">
+          {`
+            (function() {
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              var c = null;
+              try { c = localStorage.getItem('cookie-consent'); } catch(e) {}
+              var granted = c === 'granted';
+              gtag('consent', 'default', {
+                ad_storage: granted ? 'granted' : 'denied',
+                analytics_storage: granted ? 'granted' : 'denied',
+                ad_user_data: granted ? 'granted' : 'denied',
+                ad_personalization: granted ? 'granted' : 'denied',
+                wait_for_update: 500
+              });
+            })();
+          `}
+        </Script>
+
+        {/* GA4 loader & init – non-blocking */}
+        {GA_ID && (
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
+              strategy="afterInteractive"
+            />
+            <Script id="ga-init" strategy="afterInteractive">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${GA_ID}', { send_page_view: false });
+              `}
+            </Script>
+          </>
+        )}
+      </head>
+
       <body className={`${manrope.className} bg-background text-text antialiased`}>
         <SessionWrapper>
           <NotificationsProvider>
@@ -69,6 +117,8 @@ export default function RootLayout({ children }) {
             <AppFooter />
           </NotificationsProvider>
         </SessionWrapper>
+        <GaReporter gaId={GA_ID} />
+        <CookieConsent />
       </body>
     </html>
   )
