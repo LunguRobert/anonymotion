@@ -1,5 +1,6 @@
 // app/layout.js
 import './globals.css'
+import { Suspense } from 'react'
 import { Manrope } from 'next/font/google'
 import Script from 'next/script'
 import AppNavbar from '@/components/Navbar'
@@ -117,8 +118,14 @@ export default function RootLayout({ children }) {
             <AppFooter />
           </NotificationsProvider>
         </SessionWrapper>
-        <GaReporter gaId={GA_ID} />
-        <CookieConsent />
+
+        {/* IMPORTANT: hook-urile de navigare trebuie montate într-un Suspense */}
+        <Suspense fallback={null}>
+          <GaReporter gaId={GA_ID} />
+        </Suspense>
+        <Suspense fallback={null}>
+          <CookieConsent />
+        </Suspense>
       </body>
     </html>
   )
