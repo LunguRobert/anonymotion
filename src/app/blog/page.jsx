@@ -11,14 +11,14 @@ export const metadata = {
   description:
     'Actionable insights on mindfulness, journaling, stress, anxiety, sleep, and emotional fitness. Fresh, research-informed articles to help you feel and live better.',
   alternates: {
-    canonical: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/blog`,
+    canonical: '/blog',
   },
   openGraph: {
     title: 'Mindfulness & Mental Health Blog | Anonymotion',
     description:
       'Actionable insights on mindfulness, journaling, stress, anxiety, sleep, and emotional fitness.',
     type: 'website',
-    url: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/blog`,
+    url: '/blog',
   },
   twitter: {
     card: 'summary_large_image',
