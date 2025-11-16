@@ -144,33 +144,7 @@ export default async function HomePage({ searchParams }) {
       <BlogTeaser items={posts} />
 
       <FaqPlain />
-
-      <FaqSchema items={[
-        {
-          q: "Is my identity shown anywhere?",
-          a: "No. Posts display only your text and the selected mood. There are no public profiles or follower counts. Sign-in is required only to reduce spam and help moderation.",
-        },
-        {
-          q: "Do I need an account to write?",
-          a: "Yes—an account is required to post or react, but your identity is never shown on the feed. This keeps spam low and enables rate-limiting and reporting.",
-        },
-        {
-          q: "What does Premium unlock?",
-          a: "A private journal, advanced insights and trends, and extra controls. Posting anonymously to the public feed works on the free plan. Exports and delete are available from your account.",
-        },
-        {
-          q: "How are posts moderated?",
-          a: "Every post has a one-tap report. Repeated flags auto-hide content until review. Clear community guidelines help keep the space calm and kind.",
-        },
-        {
-          q: "Can I export or delete my data?",
-          a: "Yes. You can export entries and reactions (CSV/JSON/TXT) and delete entries from your account anytime. Data is encrypted in transit via HTTPS.",
-        },
-        {
-          q: "Is Anonymotion a substitute for therapy?",
-          a: "No. It can complement professional care, but it is not a replacement. If you’re in crisis, contact local support lines or a clinician.",
-        },
-      ]} />
+      
       <FinalCta />
 
       {/* SEO JSON-LD */}
