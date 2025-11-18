@@ -90,14 +90,9 @@ export default function FaqPlain({ title = "FAQ" }) {
                     See Premium
                   </Link>
                 )}
-                {/moderated/.test(item.q) || /report/i.test(item.q) ? (
-                  <Link href="/guidelines" className="underline-offset-4 hover:underline hover:text-inverted">
-
-                  </Link>
-                ) : null}
                 {/export|delete/i.test(item.q) ? (
                   <>
-                    <Link href="/privacy" className="underline-offset-4 hover:underline hover:text-inverted">
+                    <Link href="/legal/privacy" className="underline-offset-4 hover:underline hover:text-inverted">
                       Privacy policy
                     </Link>
                   </>
