@@ -9,7 +9,7 @@ export default async function sitemap() {
   // 1) Static routes (complete as needed)
   const staticPaths = [
     '/', '/blog', '/pricing', '/signup',
-    '/legal/terms', '/legal/privacy',
+    '/legal/terms', '/legal/privacy', '/anonymous-journal', '/mood-tracker', '/mental-health-journal',
   ]
 
   const staticEntries = staticPaths.map((path) => ({

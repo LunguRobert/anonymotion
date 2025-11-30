@@ -36,7 +36,7 @@ return (
 
       {/* Wordmark ca text (rămâne mereu crisp) */}
       <span className="font-bold tracking-tight text-inverted">
-        Anonymotion
+        Anonymotions
       </span>
     </Link>
   );
