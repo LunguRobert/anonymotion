@@ -1,39 +1,89 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Anonymotion — Anonymous Mindfulness & Emotional Journal App
+
+This is a **Next.js 15** full-stack application built with the **App Router**, inspired by modern, privacy-focused mental-health tools.  
+Users can write anonymously, receive supportive reactions, track emotional trends in a private journal, and interact in a calm, safe digital space.
+
+The project is designed as a **portfolio-grade full-stack application**, covering real production concepts: authentication, database design, real-time streams, caching, SEO, admin tools, and analytics.
+
+---
+
+## Tech Stack
+
+### **Frontend**
+- **Next.js 15** (App Router, Server Components)
+- **React 18**  
+- **Tailwind CSS**  
+- **Server Components for marketing pages**
+- **Client Components only where needed** (auth, realtime, charts, admin)
+
+### **Backend / Full-Stack**
+- **Next.js Route Handlers** (`app/api/...`)
+- **NextAuth.js** (Google OAuth + Email Sign-In)
+- **Prisma ORM**
+- **PostgreSQL**
+- **SSE (Server-Sent Events)** for realtime:
+  - live feed updates  
+  - live notifications  
+- **Rate limiting & input validation**
+
+### **Storage / Media**
+- **Cloudinary** (image hosting, automatic optimizations)
+
+### **Admin / CMS**
+- Blog system with:
+  - Markdown editor  
+  - Preview mode  
+  - SEO-friendly blog posts  
+  - ISR revalidation
+
+### **Analytics & Insights**
+- Mood tracking with:
+  - private emotional journal  
+  - statistics & charts  
+  - mood frequency, trends, streaks  
+- Charts via **Chart.js + react-chartjs-2** (lazy-loaded)
+
+### **SEO / Technical**
+- Full JSON-LD Schema: Organization, WebSite, WebPage, FAQ  
+- Optimized metadata for social sharing  
+- ISR (Incremental Static Regeneration)
+
+---
+
+## App Features
+
+### **Public / Anonymous**
+- Post anonymously (only text + mood)
+- View a clean, algorithm-free feed
+- React with supportive emoji  
+- Report inappropriate content  
+- Real-time updates (SSE)
+
+### **Private Account**
+- Private mood journal (not visible to anyone)
+- Add entries, track emotions, export data
+- Analytics dashboard (charts, insights)
+- Notifications in real-time
+- Manage your posts & entries
+- Google login or Email magic link
+
+### **Admin**
+- Blog management (create/edit/delete posts)
+- Markdown + syntax highlighting
+- Auto-generated OpenGraph metadata
+- Publish via ISR tags
+
+---
 
 ## Getting Started
 
-First, run the development server:
+Install dependencies:
 
 ```bash
-npm run dev
+npm install
 # or
-yarn dev
+yarn
 # or
-pnpm dev
+pnpm install
 # or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-
-
-npx prisma migrate reset --force
+bun install
