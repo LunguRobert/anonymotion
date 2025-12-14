@@ -4,8 +4,16 @@ import { getToken } from "next-auth/jwt";
 import { isAdminEmail } from "./lib/authz";
 
 export async function middleware(req) {
+  const host = req.headers.get("host") || "";
   const url = req.nextUrl;
   const { pathname } = url;
+
+  // 1) Canonical host: apex -> www (must run FIRST)
+  if (host === "anonymotions.com") {
+    const redirectUrl = url.clone();
+    redirectUrl.host = "www.anonymotions.com";
+    return NextResponse.redirect(redirectUrl, 301);
+  }
 
   const redirectToSignIn = (reason = "unauthenticated") => {
     const signInUrl = new URL("/auth/signin", url.origin);
@@ -18,10 +26,8 @@ export async function middleware(req) {
   if (pathname.startsWith("/admin")) {
     const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
 
-    // nu e logat -> redirect la login cu callback
     if (!token) return redirectToSignIn();
 
-    // logat dar nu admin -> 403 + noindex
     if (!isAdminEmail(token.email)) {
       return new NextResponse("Forbidden", {
         status: 403,
@@ -29,19 +35,14 @@ export async function middleware(req) {
       });
     }
 
-    // admin autentic -> continuă + noindex
     const res = NextResponse.next();
     res.headers.set("X-Robots-Tag", "noindex, nofollow");
     return res;
   }
 
-  // ---- User: totul sub /user necesită autentificare; redirect dacă nu e logat
+  // ---- User: totul sub /user necesită autentificare
   if (pathname.startsWith("/user")) {
     const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
-
-    // (opțional) dacă în JWT ai un flag `blocked`, deblochează comentariul:
-    // if (token?.blocked) return redirectToSignIn("blocked");
-
     if (!token) return redirectToSignIn();
     return NextResponse.next();
   }
@@ -50,5 +51,6 @@ export async function middleware(req) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/user/:path*"],
+  // run on everything except Next internals/static assets
+  matcher: ["/((?!_next|.*\\.(?:css|js|map|png|jpg|jpeg|gif|svg|webp|ico|txt|xml|json|woff2?)$).*)"],
 };
