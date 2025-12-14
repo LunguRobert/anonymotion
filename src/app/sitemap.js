@@ -4,7 +4,7 @@ import prisma from '@/lib/prisma'
 export const revalidate = 3600 // re-generate every hour
 
 export default async function sitemap() {
-  const base = process.env.NEXT_PUBLIC_BASE_URL || 'https://anonymotions.com'
+  const base = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.anonymotions.com'
 
   // 1) Static routes (complete as needed)
   const staticPaths = [

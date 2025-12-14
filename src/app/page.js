@@ -53,7 +53,7 @@ export const metadata = {
 
 // JSON-LD (Organization, WebSite, WebPage, FAQ) — server-rendered
 function JsonLd() {
-  const base = process.env.NEXT_PUBLIC_BASE_URL || "https://anonymotions.com";
+  const base = process.env.NEXT_PUBLIC_BASE_URL || "https://www.anonymotions.com";
 
   const data = [
     {

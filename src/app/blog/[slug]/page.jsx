@@ -168,7 +168,7 @@ export default async function BlogPostPage({ params }) {
 
   // absolute URL for share/canonical
   const hdrs = headers()
-  const host = process.env.NEXT_PUBLIC_SITE_URL || `https://${hdrs.get('host')}`
+  const host = process.env.NEXT_PUBLIC_BASE_URL || `https://www.${hdrs.get('host')}`
   const canonical = `${host}/blog/${post.slug}`
 
   const toc = extractToc(content)

@@ -2,7 +2,7 @@
 export const runtime = 'nodejs'
 
 export default function robots() {
-  const base = process.env.NEXT_PUBLIC_BASE_URL || 'https://anonymotions.com'
+  const base = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.anonymotions.com'
 
   return {
     rules: [

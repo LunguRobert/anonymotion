@@ -28,11 +28,11 @@ export const metadata = {
   openGraph: {
     title: 'Anonymotion',
     description: 'Express emotions anonymously.',
-    url: 'https://anonymotions.com',
+    url: 'https://www.anonymotions.com',
     siteName: 'Anonymotion',
     images: [
       {
-        url: 'https://anonymotions.com/og-image.png',
+        url: 'https://www.anonymotions.com/og-image.png',
         width: 1200,
         height: 630,
         alt: 'Anonymotion',
@@ -45,11 +45,11 @@ export const metadata = {
     card: 'summary_large_image',
     title: 'Anonymotion',
     description: 'Express emotions anonymously.',
-    images: ['https://anonymotions.com/og-image.png'],
+    images: ['https://www.anonymotions.com/og-image.png'],
   },
-  metadataBase: new URL('https://anonymotions.com'),
+  metadataBase: new URL('https://www.anonymotions.com'),
   alternates: {
-    canonical: process.env.NEXT_PUBLIC_BASE_URL || 'https://anonymotions.com',
+    canonical: process.env.NEXT_PUBLIC_BASE_URL || 'https://www.anonymotions.com',
   },
 }
 
