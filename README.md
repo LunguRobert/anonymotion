@@ -4,7 +4,7 @@ This is a **Next.js 15** full-stack application built with the **App Router**, i
 Users can write anonymously, receive supportive reactions, track emotional trends in a private journal, and interact in a calm, safe digital space.
 
 The project is designed as a **portfolio-grade full-stack application**, covering real production concepts: authentication, database design, real-time streams, caching, SEO, admin tools, and analytics.
-
+https://www.anonymotions.com/
 ---
 
 ## Tech Stack
