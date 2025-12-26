@@ -109,7 +109,7 @@ export default function JournalModal({ onClose, onAdd, entryToEdit = null, onDel
             {isEdit ? 'Edit entry' : 'New journal entry'}
           </Dialog.Title>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-5 mb-12">
             {/* Mood chips (server expects `mood`) */}
             <div>
               <label className="mb-2 block text-sm text-muted">How are you feeling?</label>
